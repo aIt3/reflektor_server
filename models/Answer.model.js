@@ -6,7 +6,7 @@ const answerSchema = new Schema(
 
     answer: String,
     explanation: String, 
-    date:  Date,
+    postedAt: {type: Date, default: Date.now},
     question: {
         type: String,
         enum: ['text', 'link', 'image']

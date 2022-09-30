@@ -5,7 +5,7 @@ const questionSchema = new Schema(
   {
     question: String,
     date:  Date,
-    question: {
+    questionType: {
         type: String,
         enum: ['text', 'link', 'image']
     }, 
