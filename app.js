@@ -26,6 +26,9 @@ app.use("/api", allRoutes);
 const answerRouter = require ('./routes/answer.routes')
 app.use('/api', answerRouter)
 
+const questionRouter = require('./routes/questions.routes')
+app.use('/api', questionRouter)
+
 // AUTH ROUTES
 const authRouter = require("./routes/auth.routes");          
 app.use("/auth", authRouter);   

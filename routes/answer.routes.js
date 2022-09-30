@@ -1,7 +1,10 @@
 const router = require("express").Router();
-const Answer = require('../models/Answer.model')
+const Answer = require('../models/Answer.model');
+const Question = require("../models/Question.model");
 const User = require('../models/User.model')
 
+
+//--------ANSWER ROUTES
 // POST /api/answers - Create a new Answer 
 router.post('/answers', (req, res, next) => {
     // do i need to use "question", "postedByUser" from the Model aswell?
@@ -19,5 +22,4 @@ router.get('/allAnswersByUser', (req, res, next) => {
         .then(allAnswers => res.json(allAnswers))
         .catch(err => res.json(err))
 })
-
 module.exports = router
