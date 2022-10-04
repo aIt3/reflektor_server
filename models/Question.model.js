@@ -4,7 +4,7 @@ const { Schema, model } = require("mongoose");
 const questionSchema = new Schema(
   {
     question: String,
-    date:  Date,
+    date:  String,
     questionType: {
         type: String,
         enum: ['text', 'link', 'image']

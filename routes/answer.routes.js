@@ -3,15 +3,17 @@ const { default: mongoose } = require("mongoose");
 const Answer = require('../models/Answer.model');
 const Question = require("../models/Question.model");
 const User = require('../models/User.model')
+const { isAuthenticated } = require('./../middleware/jwt.middleware.js'); // <== IMPORT
 
 
 //--------ANSWER ROUTES
 // POST /api/answers - Create a new Answer 
-router.post('/answers', (req, res, next) => {
+router.post('/answers', isAuthenticated, (req, res, next) => {
     // do i need to use "question", "postedByUser" from the Model aswell?
     const {answer, explanation, postedAt} = req.body
+    const postedByUser = req.payload._id
 
-    Answer.create({answer, explanation, postedAt})
+    Answer.create({ postedByUser , answer, explanation, postedAt})
         .then(response => res.json(response))
         .catch (err => res.json (err))
 })
@@ -24,7 +26,7 @@ router.get('/allAnswersByUser', (req, res, next) => {
         .catch(err => res.json(err))
 })
 // PUT /api/answers/:answerId, - Edit an specific Answer
-    router.put('/answers/:answerId', (req, res) =>{
+    router.put('/answers/edit/:answerId', (req, res) =>{
     const {answerId} = req.params
 
     if(!mongoose.Types.ObjectId.isValid(answerId)){
@@ -40,7 +42,7 @@ router.get('/allAnswersByUser', (req, res, next) => {
 
 //DELETE / api/answers/:answerId
 
-router.delete('/answers/:answerId', (req, res) => {
+router.delete('/answers/delete/:answerId', (req, res) => {
     const {answerId} = req.params
     if(!mongoose.Types.ObjectId.isValid(answerId)) {
         res.status(400).json({message: 'Specific id is not valid'});
