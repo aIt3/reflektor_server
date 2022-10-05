@@ -4,6 +4,7 @@ const Question = require("../models/Question.model");
 const { default: mongoose } = require("mongoose");
 const User = require('../models/User.model')
 const moment = require('moment');
+const { populate } = require("../models/Answer.model");
 
 //--------QUESTION ROUTES
 // POST /api/answers - Create a new Question 
@@ -31,7 +32,15 @@ router.get('/questions/pastdays', (req, res) => {
     const today = moment().format(moment.HTML5_FMT.DATE)
     // $eq - Matches values that are less than or equal to a specified value.
     Question.find({date : {$lte : today}})
-    .populate('answersByUsers')
+    .populate(({
+        path: 'answersByUsers',
+        populate: {
+            path: 'postedByUser',
+        }
+    }))
+    .sort({
+        date: -1
+    })
     .then(pastQuestions => res.json(pastQuestions))
     .catch(err => res.json(err))
 

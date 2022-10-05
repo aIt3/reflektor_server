@@ -15,7 +15,16 @@ router.post('/answers', isAuthenticated, (req, res, next) => {
 console.log(questionId)
     Answer.create({ postedByUser , answer, explanation, postedAt, questionRef: questionId})
         .then(newAnswer => {
-            return Question.findByIdAndUpdate(questionId, {$push: {answersByUsers: newAnswer._id} }, {new: true} )
+            return (
+                Question.findByIdAndUpdate(questionId, {$push: {answersByUsers: newAnswer._id} }, {new: true} )
+            )
+            .then(newResponse => {
+                return(
+                User.findByIdAndUpdate(postedByUser, {$push: {answersByUsers: newAnswer._id} }, {new: true} )
+                )
+
+            })
+            
         })
         .then(response => console.log(response))
         .catch (err => res.json (err))
