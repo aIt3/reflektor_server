@@ -23,7 +23,7 @@ module.exports = (app) => {
   app.use(
     cors({
       credentials: true,
-      origin: process.env.ORIGIN || "http://localhost:3000",
+      origin: ["http://localhost:3000", 'https://https://r3flektor.netlify.app'],
     })
   );
 
