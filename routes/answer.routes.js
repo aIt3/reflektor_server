@@ -10,18 +10,20 @@ const { isAuthenticated } = require('./../middleware/jwt.middleware.js'); // <==
 // POST /api/answers - Create a new Answer 
 router.post('/answers', isAuthenticated, (req, res, next) => {
     // do i need to use "question", "postedByUser" from the Model aswell?
-    const {answer, explanation, postedAt} = req.body
+    const {answer, explanation, postedAt, questionId } = req.body
     const postedByUser = req.payload._id
-
-    Answer.create({ postedByUser , answer, explanation, postedAt})
-        .then(response => res.json(response))
+console.log(questionId)
+    Answer.create({ postedByUser , answer, explanation, postedAt, questionRef: questionId})
+        .then(newAnswer => {
+            return Question.findByIdAndUpdate(questionId, {$push: {answersByUsers: newAnswer._id} }, {new: true} )
+        })
+        .then(response => console.log(response))
         .catch (err => res.json (err))
 })
 
 // GET /api/allAnswers - Retrieve all of the the answer by User
 router.get('/allAnswersByUser', (req, res, next) => {
     Answer.find()
-        .populate('postedByUser')
         .then(allAnswers => res.json(allAnswers))
         .catch(err => res.json(err))
 })
@@ -42,15 +44,17 @@ router.get('/allAnswersByUser', (req, res, next) => {
 
 //DELETE / api/answers/:answerId
 
-router.delete('/answers/delete/:answerId', (req, res) => {
-    const {answerId} = req.params
-    if(!mongoose.Types.ObjectId.isValid(answerId)) {
-        res.status(400).json({message: 'Specific id is not valid'});
-        return
+router.delete('/answers/delete/:answerId', (req, res, next) => {
+    const { answerId } = req.params;
+    
+    if (!mongoose.Types.ObjectId.isValid(answerId)) {
+      res.status(400).json({ message: 'Specified id is not valid' });
+      return;
     }
+   
     Answer.findByIdAndRemove(answerId)
-    .then(answer => res.json({message: `Project with the id ${answer._id} was succesfully deleted}`}))
-    .catch(err => console.log(err))
-})
+      .then(() => res.json({ message: `Project with ${answerId} is removed successfully.` }))
+      .catch(error => res.json(error));
+  });
 
 module.exports = router

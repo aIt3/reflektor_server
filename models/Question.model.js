@@ -9,10 +9,10 @@ const questionSchema = new Schema(
         type: String,
         enum: ['text', 'link', 'image']
     }, 
-    answersByUsers: {
+    answersByUsers: [{
         type: Schema.Types.ObjectId,
         ref: 'Answer'
-    }
+    }]
   })
 
 
