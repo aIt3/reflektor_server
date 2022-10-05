@@ -14,6 +14,10 @@ const answerSchema = new Schema(
     postedByUser: {
         type: Schema.Types.ObjectId,
         ref: 'User'
+    },
+    questionRef: {
+      type: Schema.Types.ObjectId,
+      ref: 'Question'
     }
   })
 

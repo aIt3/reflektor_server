@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const Answer = require('../models/Answer.model');
 const Question = require("../models/Question.model");
+const { default: mongoose } = require("mongoose");
 const User = require('../models/User.model')
 const moment = require('moment');
 
@@ -9,7 +10,7 @@ const moment = require('moment');
 router.post('/questions', (req, res, next) => {
     const {question, date, questionType} = req.body
 
-    Question.create({question, date, questionType})
+    Question.create({question, date, questionType, answersByUsers})
         .then(response => res.json(response))
         .catch (err => res.json (err))
 })
@@ -26,14 +27,26 @@ router.get('/questions/today', (req, res, next) => {
 
 //GET /api/answer/today - get the Question which are older than today
 
-router.get('/questions/pastdays', (req, res, next) => {
+router.get('/questions/pastdays', (req, res) => {
     const today = moment().format(moment.HTML5_FMT.DATE)
-    // $eq - Matches values that are less than a specified value..
-    Question.find({date : {$lt : today}})
+    // $eq - Matches values that are less than or equal to a specified value.
+    Question.find({date : {$lte : today}})
+    .populate('answersByUsers')
     .then(pastQuestions => res.json(pastQuestions))
     .catch(err => res.json(err))
 
+})
+//DELETE / api/question/:answerId
 
+router.delete('/questions/delete/:questionId', (req, res, next) => {
+    const {questionId} = req.params
+    if(!mongoose.Types.ObjectId.isValid(questionId)) {
+        res.status(400).json({message: 'Specific id is not valid'});
+        return
+    }
+    Question.findByIdAndRemove(questionId)
+    .then(question => res.json({message: `Project with the id ${question._id} was succesfully deleted}`}))
+    .catch(err => console.log(err))
 })
 
 
