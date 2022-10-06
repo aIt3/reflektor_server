@@ -14,7 +14,12 @@ router.get('/profile/:profileId', (req, res) => {
         return;
       }
       User.findById(profileId)
-      .populate('answersByUsers')
+      .populate(({
+        path: 'answersByUsers',
+        populate: {
+            path: 'questionRef',
+        }
+    }))
       .then(user => res.json(user))
       .catch(err => console.log(err))
 
