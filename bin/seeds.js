@@ -4,7 +4,7 @@ const Question = require("../models/Question.model");
 
 const DB_NAME = "reflektor";
 
-mongoose.connect(`mongodb+srv://malte:0MQ5iFt2mFH5OVoS@cluster0.i3jgj4r.mongodb.net/${DB_NAME}` 
+mongoose.connect(`mongodb+srv://malte:0MQ5iFt2mFH5OVoS@cluster0.i3jgj4r.mongodb.net/node ${DB_NAME}` 
 // {
 //   useCreateIndex: true,
 //   useNewUrlParser: true,
